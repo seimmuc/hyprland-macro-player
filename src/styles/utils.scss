@@ -1,0 +1,28 @@
+@mixin flex($direction, $wrap: false, $justify: flex-start, $align: center) {
+  display: flex;
+  flex-direction: $direction;
+  @if $wrap == false {
+    flex-wrap: nowrap;
+  } @else if $wrap == true {
+    flex-wrap: wrap;
+  } @else {
+    flex-wrap: $wrap;
+  }
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin select-mode($cursor: null, $mode: text) {
+  @if ($cursor != null) {
+    cursor: $cursor;
+  }
+  user-select: $mode;
+  -webkit-user-select: $mode;
+  -moz-user-select: $mode;
+  -ms-user-select: $mode;
+}
+
+@mixin no-select {
+  @include select-mode($cursor: default, $mode: none);
+}
+

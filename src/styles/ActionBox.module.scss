@@ -1,0 +1,128 @@
+@use "utils";
+@use "consts";
+$action-height: 2.5em;
+
+:export {
+  animationDuration: consts.$animation-duration;
+  actionHeight: $action-height;
+}
+
+.actions-box {
+  @include utils.flex(column, $justify: stretch, $align: stretch);
+  background-color: var(--col-frame1-bg, #181818);
+  border: 2px solid var(--col-frame1-border, #303030);
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 0;
+  @include utils.no-select;
+
+  .actions-list {
+    @include utils.flex(column, $justify: flex-start, $align: stretch);
+    //background-color: var(--col-frame2-bg, #1b1b1b);
+    //border: 1px solid var(--col-frame2-border, #303030);
+    margin: 0;
+    padding: 0.2em 0.15em;
+    gap: 0.2em;
+    list-style: none;
+    .action {
+      @include utils.flex(row, $justify: flex-start, $align: center);
+      border-radius: 4px;
+      gap: 0.8em;
+      background-color: var(--col-frame3-bg, #202020);
+      height: $action-height;
+
+      &.idle {
+        background-color: var(--action-progress-idle-bg, #203030);
+      }
+      &.in-progress {
+        background: linear-gradient(90deg, var(--action-progress-run-fil-bg, #777) var(--progress, 50%), var(--action-progress-run-std-bg, #777) var(--progress, 50%));
+        &.paused {
+          background: linear-gradient(90deg, var(--action-progress-paused-fil-bg, #777) var(--progress, 50%), var(--action-progress-paused-std-bg, #777) var(--progress, 50%));
+        }
+      }
+      &.complete {
+        background-color: var(--action-progress-complete-bg, #204020);
+      }
+
+      .drag-handle {
+        align-self: stretch;
+        @include utils.flex(column, $justify: center, $align: center);
+        cursor: grab;
+        align-content: center;
+        span {
+          text-align: center;
+          text-box: trim-both;
+        }
+      }
+      .action-content {
+        flex-grow: 1;
+        @include utils.flex(row, $justify: flex-start, $align: center);
+        gap: 0.8em;
+        input {
+          &[type="range"] {
+            padding: 0;
+            accent-color: var(--col-primary-border, #aad);
+            transition: accent-color #{consts.$animation-duration}s;
+            &:hover {
+              accent-color: var(--col-primary-border-hover, #aad);
+            }
+          }
+          &[type="number"] {
+            padding: 0.3em 0.5em;
+          }
+        }
+        .key-label {
+          border: 1px solid var(--col-frame3-border, #303030);
+          border-radius: 0.25em;
+          padding: 0.05em 0.4em;
+          @include utils.select-mode($cursor: pointer, $mode: all);
+        }
+      }
+    }
+  }
+  .toolbar {
+    @include utils.flex(row, $justify: space-between, $align: stretch);
+    background-color: var(--col-frame2-bg, #1b1b1b);
+    border-top: 2px solid var(--col-frame1-border, #303030);
+    padding: 0;
+    .new-action-section {
+      @include utils.flex(row, $wrap: true, $justify: stretch, $align: center);
+      flex-grow: 1;
+      flex-shrink: 1;
+      padding: 3px;
+      gap: 5px;
+    }
+    .actions-status {
+      @include utils.flex(row, $justify: stretch, $align: center);
+      flex-grow: 0;
+      flex-shrink: 0;
+      background-color: var(--col-frame3-bg, #202020);
+      border-left: 2px solid var(--col-frame1-border, #303030);
+      padding: 0 4px;
+    }
+  }
+  button {
+    @include utils.flex(row, $justify: space-between, $align: center);
+    gap: 0.2em;
+    padding: 0.45em 0.55em;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--col-primary-border, #aad);
+    background-color: var(--col-primary-bg, #bbe);
+    color: var(--col-complementary-fg, #441);
+    @include utils.no-select;
+    transition-property: border-color, background-color, color;
+    transition-duration: #{consts.$animation-duration}s;
+    transition-timing-function: ease-in-out;
+    &:disabled {
+      border-color: var(--col-primary-border-disabled, #aad);
+      background-color: var(--col-primary-bg-disabled, #bbe);
+      color: var(--col-complementary-fg-disabled, #441);
+    }
+    &:hover:not(:disabled) {
+      border-color: var(--col-primary-border-hover, #aad);
+      background-color: var(--col-primary-bg-hover, #bbe);
+      color: var(--col-complementary-fg-hover, #441);
+    }
+  }
+}

@@ -1,0 +1,69 @@
+@use 'sass:color';
+@use 'sass:math';
+@use 'sass:meta';
+
+@function light($fgl, $bgl, $weight) {
+  @if math.unit($weight) == "%" {
+    $weight: math.div($weight, 100%);
+  }
+  @return math.percentage($bgl + ($fgl - $bgl) * $weight);
+}
+
+@function rotate-hue($hue, $angle) {
+  @return ($hue + $angle) % 360deg;
+}
+
+@mixin prim-comp-hov-dis($primary-hue, $fgl, $bgl, $lightness, $chroma, $name) {
+  $complementary-hue: ($primary-hue + 180deg) % 360deg;
+  --col-primary-#{$name}:                oklch(#{light($fgl, $bgl, math.clamp(0%, $lightness, 100%))} #{math.clamp(0%, $chroma, 100%)} #{$primary-hue});
+  --col-complementary-#{$name}:          oklch(#{light($fgl, $bgl, math.clamp(0%, $lightness, 100%))} #{math.clamp(0%, $chroma, 100%)} #{$complementary-hue});
+  --col-primary-#{$name}-hover:          oklch(#{light($fgl, $bgl, math.clamp(0%, $lightness + 7%, 100%))} #{math.clamp(0%, $chroma + 10%, 100%)} #{$primary-hue});
+  --col-complementary-#{$name}-hover:    oklch(#{light($fgl, $bgl, math.clamp(0%, $lightness + 7%, 100%))} #{math.clamp(0%, $chroma + 10%, 100%)} #{$complementary-hue});
+  --col-primary-#{$name}-disabled:       oklch(#{light($fgl, $bgl, math.clamp(0%, $lightness, 100%))} #{math.clamp(0%, $chroma * 0.1, 100%)} #{$primary-hue});
+  --col-complementary-#{$name}-disabled: oklch(#{light($fgl, $bgl, math.clamp(0%, $lightness, 100%))} #{math.clamp(0%, $chroma * 0.1, 100%)} #{$complementary-hue});
+}
+
+@mixin theme($bg-light, $fg-light, $primary-hue) {
+  @if meta.type-of($primary-hue) == color {
+    $primary-hue: color.channel(color.to-space($primary-hue, oklch), "hue");
+  } @else if math.is-unitless($primary-hue) {
+    $primary-hue: #{$primary-hue}deg;
+  }
+  $bgl: $bg-light;
+  $fgl: $fg-light;
+
+  // Hue
+  $hue-primary: $primary-hue;
+  $hue-complementary: rotate-hue($hue-primary, 180deg);
+
+  --primary: oklch(50% 70% $primary-hue);
+
+  --col-background: oklch(#{light($fgl, $bgl, 10%)} none none);
+  --col-foreground: oklch(#{light($fgl, $bgl, 95%)} none none);
+
+  @include prim-comp-hov-dis($hue-primary, $fgl, $bgl, 50%, 20%, "border");
+  @include prim-comp-hov-dis($hue-primary, $fgl, $bgl, 30%, 15%, "bg");
+  @include prim-comp-hov-dis($hue-primary, $fgl, $bgl, 80%, 20%, "fg");
+
+  --col-frame1-bg: oklch(#{light($fgl, $bgl, 16%)} none none);
+  --col-frame2-bg: oklch(#{light($fgl, $bgl, 21%)} none none);
+  --col-frame3-bg: oklch(#{light($fgl, $bgl, 26%)} none none);
+  --col-frame1-border: oklch(#{light($fgl, $bgl, 34%)} none none);
+  --col-frame2-border: oklch(#{light($fgl, $bgl, 39%)} none none);
+  --col-frame3-border: oklch(#{light($fgl, $bgl, 44%)} none none);
+
+  --action-progress-idle-bg: oklch(#{light($fgl, $bgl, 44%)} 60% #{rotate-hue($hue-primary, -60deg)});
+  --action-progress-run-std-bg: oklch(#{light($fgl, $bgl, 38%)} 55% #{$hue-primary});
+  --action-progress-run-fil-bg: oklch(#{light($fgl, $bgl, 50%)} 70% #{$hue-primary});
+  --action-progress-paused-std-bg: oklch(#{light($fgl, $bgl, 30%)} 35% #{$hue-primary});
+  --action-progress-paused-fil-bg: oklch(#{light($fgl, $bgl, 42%)} 50% #{$hue-primary});
+  --action-progress-complete-bg: oklch(#{light($fgl, $bgl, 44%)} 60% #{rotate-hue($hue-primary, 60deg)});
+}
+
+@mixin themeLight($primary-hue) {
+  @include theme(1, 0, $primary-hue);
+}
+
+@mixin themeDark($primary-hue) {
+  @include theme(0, 1, $primary-hue);
+}

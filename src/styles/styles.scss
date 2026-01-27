@@ -1,0 +1,22 @@
+@use "themes";
+
+//$primary-hue: #ff00b9;
+//$primary-hue: #40ff00;
+$primary-hue: #0095ff;
+
+:root {
+  &.theme-dark {
+    @include themes.themeDark($primary-hue);
+  }
+  &.theme-light {
+    @include themes.themeLight($primary-hue);
+  }
+  @include themes.themeDark($primary-hue);
+  background-color: var(--col-background, #111);
+  color: var(--col-foreground, #eee);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    @include themes.themeLight($primary-hue);
+  }
+}

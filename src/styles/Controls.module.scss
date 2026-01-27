@@ -1,0 +1,55 @@
+@use "utils";
+@use "consts";
+
+:export {
+  animationDuration: consts.$animation-duration;
+}
+
+.controls-box {
+  align-self: center;
+  @include utils.flex(row, $justify: center, $align: stretch);
+  @include utils.no-select;
+  background-color: var(--col-frame1-bg, #181818);
+  border: 2px solid var(--col-frame1-border, #303030);
+  border-top: none;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  overflow: hidden;
+  padding: 0;
+  margin: 0 1.5em;
+  button {
+    box-sizing: border-box;
+    padding: 0.5em;
+    @include utils.flex(row, $justify: center, $align: center);
+    border: none;
+    background-color: transparent;
+    color: var(--col-primary-fg, #117);
+    transition-property: background-color, color;
+    transition-duration: #{consts.$animation-duration}s;
+    transition-timing-function: ease-in-out;
+    &:disabled {
+      //background-color: var(--col-primary-bg-disabled, #bbe);
+      color: var(--col-primary-fg-disabled, #441);
+    }
+    &:hover:not(:disabled) {
+      //background-color: var(--col-primary-bg-hover, #bbe);
+      color: var(--col-primary-fg-hover, #441);
+      filter: drop-shadow(0 0 0.35em color-mix(in oklch, var(--col-complementary-fg-hover, #441) 25%, transparent));
+    }
+    &.switching-icon {
+      // Overlay child <span>s on top of each other, they'll be animated in tsx
+      display: grid;
+      > span {
+        grid-column: 1;
+        grid-row: 1;
+        backface-visibility: hidden;
+      }
+    }
+  }
+  :global(.material-symbols-rounded) {
+    aspect-ratio: 1/1;
+    font-size: 2.5em;
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+}
+
