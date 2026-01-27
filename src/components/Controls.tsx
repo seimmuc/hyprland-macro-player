@@ -1,16 +1,16 @@
 import style from "../styles/Controls.module.scss";
 import "material-symbols/rounded.css";
-import {ActionFunctions, MacroState} from "../lib/componentData.ts";
+import {ActionBoxState, ActionFunctions, MacroState} from "../lib/componentData.ts";
 import {AnimatePresence, motion } from "motion/react";
 import {useState} from "react";
 
-export function Controls({ state, funcs }: { state: MacroState, funcs: ActionFunctions }) {
+export function Controls({ aState, mState, funcs }: {aState: ActionBoxState, mState: MacroState, funcs: ActionFunctions }) {
   const [firstState, setFirstState] = useState<boolean>(true);  // skip animation on initial load
   function actionPlayPause() {
-    if (state.awaitingResponse) {
+    if (mState.awaitingResponse) {
       return;
     }
-    if (state.currentState === 'PLAYING') {
+    if (mState.currentState === 'PLAYING') {
       funcs.controls.pause();
     } else {
       funcs.controls.play();
@@ -19,7 +19,7 @@ export function Controls({ state, funcs }: { state: MacroState, funcs: ActionFun
   }
 
   function actionStop() {
-    if (state.awaitingResponse || state.currentState === 'EDITING') {
+    if (mState.awaitingResponse || mState.currentState === 'EDITING') {
       return;
     }
     funcs.controls.stop();
@@ -31,22 +31,24 @@ export function Controls({ state, funcs }: { state: MacroState, funcs: ActionFun
     exit: { rotateY: 180 },
     transition: {duration: parseFloat(style.animationDuration)}
   }
+  const playDisabled = mState.awaitingResponse ||
+      (mState.currentState === 'EDITING' && aState.actions.length === 0);
 
   return (
     <div className={style.controlsBox}>
-      <button className={style.switchingIcon} disabled={state.awaitingResponse} onClick={actionPlayPause}>
+      <button className={style.switchingIcon} disabled={playDisabled} onClick={actionPlayPause}>
         <AnimatePresence>
-          {state.currentState !== 'PLAYING' ? (
+          {mState.currentState !== 'PLAYING' ? (
             <motion.span key="pl" className="material-symbols-rounded" {...playPauseAnim}>play_circle</motion.span>
           ) : (
             <motion.span key="pa" className="material-symbols-rounded" {...playPauseAnim}>pause_circle</motion.span>
           )}
         </AnimatePresence>
       </button>
-      <button disabled={state.awaitingResponse || state.currentState === 'EDITING'} onClick={actionStop}>
+      <button disabled={mState.awaitingResponse || mState.currentState === 'EDITING'} onClick={actionStop}>
         <span className="material-symbols-rounded">stop_circle</span>
       </button>
-      <button disabled={state.awaitingResponse || state.currentState !== 'EDITING'} onClick={actionStop}>
+      <button disabled={mState.awaitingResponse || mState.currentState !== 'EDITING'} onClick={actionStop}>
         <span className="material-symbols-rounded">change_circle</span>
       </button>
       {/*<AnimatePresence>*/}

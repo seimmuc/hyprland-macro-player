@@ -88,6 +88,9 @@ export function MacroSection() {
             if (macroState.activeMacro !== undefined) {
               throw new Error('cannot play: activeMacro is not undefined');
             }
+            if (abState.actions.length < 1) {
+              return false;
+            }
             const macr: RustMacro = {
               id: nmId++,
               actions: actionsToRust(abState.actions),
@@ -257,7 +260,7 @@ export function MacroSection() {
   return (
     <>
       <ActionBox state={abState} paused={macroState.currentState === 'PAUSED'} funcs={abFuncs} />
-      <Controls state={macroState} funcs={abFuncs} />
+      <Controls aState={abState} mState={macroState} funcs={abFuncs} />
     </>
   );
 }
