@@ -48,28 +48,6 @@ export interface RustMacro {
   loops: number;
 }
 
-
-// Commands
-// export type PlayerCommandType = 'execute' | 'pause' | 'resume' | 'stop';
-// interface BasePlayerCommand {
-//   command: PlayerCommandType;
-// }
-// interface ExecuteCommand extends BasePlayerCommand {
-//   command: 'execute';
-//   actions: Action[];
-// }
-// interface PauseCommand extends BasePlayerCommand {
-//   command: 'pause';
-// }
-// interface ResumeCommand extends BasePlayerCommand {
-//   command: 'resume';
-// }
-// interface StopCommand extends BasePlayerCommand {
-//   command: 'stop';
-// }
-// export type PlayerCommand = ExecuteCommand | PauseCommand | ResumeCommand | StopCommand;
-
-
 // Event types
 export interface ProgressInfo {
   action_index: number;     // integer in (0, len(actions))

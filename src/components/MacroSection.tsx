@@ -102,8 +102,6 @@ export function MacroSection() {
             // send command and wait for response
             const stResponse = await invoke<RunningEvent>('start_macro', { macr });
 
-            console.log('start_macro returned');
-            console.log(stResponse);
             if (stResponse.event_type !== 'running') {
               throw new Error('start_macro must only return RunningEvent');
             }
@@ -129,8 +127,6 @@ export function MacroSection() {
 
             // send command and wait for response
             const rsResponse = await invoke<RunningEvent>('resume_macro', { id: macroState.activeMacro.id });
-            console.log('resume_macro returned');
-            console.log(rsResponse);
 
             if (rsResponse.event_type !== 'running') {
               throw new Error('resume_macro must only return RunningEvent');
@@ -160,8 +156,6 @@ export function MacroSection() {
 
         // send command and wait for response
         const response = await invoke<PausedEvent>('pause_macro', { id: macroState.activeMacro.id });
-        console.log('pause_macro returned');
-        console.log(response);
 
         if (response.event_type !== 'paused') {
           throw new Error('pause_macro must only return PausedEvent');
@@ -190,8 +184,6 @@ export function MacroSection() {
 
         // send command and wait for response
         const response = await invoke<StoppedEvent>('stop_macro', { id: macroState.activeMacro.id });
-        console.log('stop_macro returned');
-        console.log(response);
 
         if (response.event_type !== 'stopped') {
           throw new Error('stop_macro must only return StoppedEvent');
@@ -221,8 +213,7 @@ export function MacroSection() {
     const onMacroEvent = (event: Event<MacroEvent>) => {
       const me: MacroEvent = event.payload;
       const ms: MacroState = macroStateRef.current;
-      // console.log('macro event');
-      // console.log(me);
+      // TODO queue events if ms.awaitingResponse is true and process them later
       if (ms.awaitingResponse || ms.currentState === 'EDITING' || ms.activeMacro === undefined || ms.activeMacro.id !== me.id) {
         return;
       }

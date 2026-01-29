@@ -167,7 +167,6 @@ function ActionKey({ action, locked, editAction }: { action: KeyAction; locked: 
       return;
     }
     const kc: KeyCombo | undefined = key === "escape" ? undefined : keyComboReact(e);
-    console.log('onKeyDown', JSON.stringify(kc));
     setCapturing(false);
     editAction(action.actionId, act => {(act as KeyAction).key = kc});
   }
