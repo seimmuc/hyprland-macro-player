@@ -18,8 +18,17 @@ export interface SysInfo {
 export type ActionType = 'sleep' | 'key' | 'craft';
 export type PlayerEventType = 'update' | 'running' | 'paused' | 'stopped' | 'error';
 
+// Macro options types
+interface BaseMacroOptions {
+  type: 'hyprland';
+}
+export interface OptionsHyprland extends BaseMacroOptions {
+  type: 'hyprland';
+  window_identifier: string;
+}
+export type MacroOptions = OptionsHyprland;
 
-// Macro and Action types
+// Macro action types
 export type ModifierKey = 'shift' | 'ctrl' | 'alt' | 'super';
 export interface KeyCombo {
   modifiers?: ModifierKey[];
@@ -41,11 +50,14 @@ export interface CraftAction extends BaseAction {
   action: 'craft';
 }
 export type Action = SleepAction | KeyAction | CraftAction;
+
+// Macro
 /** TS version of Rust struct `data_types::Macro` */
 export interface RustMacro {
   id: number;   // TODO move ID assignment to Rust
   actions: Array<Omit<SleepAction, 'actionId'> | Omit<KeyAction, 'actionId'> | Omit<CraftAction, 'actionId'>>;
   loops: number;
+  options: MacroOptions;
 }
 
 // Event types

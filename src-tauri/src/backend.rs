@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex, RwLock};
 use std::time::Duration;
 use tauri::{AppHandle, Emitter, Manager};
 use tokio::time::{sleep, sleep_until, Instant};
-use crate::data_types::{Macro, MacroAction, MacroEvent, MacroProgress, SysInfo};
+use crate::data_types::{Macro, MacroAction, MacroEvent, MacroOptions, MacroProgress, SysInfo};
 use crate::utils::hyprland_key_mods;
 
 pub struct MacroState {
@@ -80,7 +80,7 @@ pub async fn start_macro(macr: Macro, app: AppHandle, state_mutex: tauri::State<
 
     // Spawn the macro runner
     tauri::async_runtime::spawn(async move {
-        macro_runner(macr, app.clone()).await;
+        hypr_macro_runner(macr, app.clone()).await;
 
         let state_mutex = app.state::<SharedState>();
         let app_state = state_mutex.lock().unwrap();
@@ -157,8 +157,16 @@ async fn macro_handle_pause_and_stop(state: &Arc<Mutex<MacroState>>, sleep_milli
     (state.lock().unwrap().should_stop, dur)
 }
 
-async fn macro_runner(macr: Macro, app: AppHandle) {
+async fn hypr_macro_runner(macr: Macro, app: AppHandle) {
     let macro_state = app.state::<SharedState>().lock().unwrap().running_macros.read().unwrap().get(&macr.id).unwrap().clone();
+    let [window_identifier] = match macr.options {
+        MacroOptions::Hyprland { window_identifier } => {
+            [window_identifier]
+        }
+        // _ => {
+        //     panic!("hypr_macro_runner can only execute macros with MacroOptions::Hyprland options")
+        // }
+    };
 
     let update_interval = Duration::from_millis(25);
     let mut next_update = Instant::now();
@@ -233,7 +241,7 @@ async fn macro_runner(macr: Macro, app: AppHandle) {
                 }).unwrap();
                 if let Some(key) = key {
                     // window identifier is hard-coded for now TODO add as a setting
-                    let window_id = "";
+                    let window_id = &window_identifier;
                     // let window_id = "class:org.kde.kate";
                     // let window_id = "class:thunar";
                     let mod_str = hyprland_key_mods(&key.modifiers);

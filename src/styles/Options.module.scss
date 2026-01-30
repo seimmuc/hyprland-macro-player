@@ -1,0 +1,10 @@
+@use "utils";
+
+.opts-notice {
+  @include utils.top-level-box;
+  padding: calc(0.15em + 2px);
+}
+
+.options-section {
+  @include utils.flex(column, $wrap: false, $justify: flex-start, $align: stretch);
+}

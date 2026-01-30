@@ -1,15 +1,24 @@
 import {ReactNode, useState, MouseEvent} from "react";
 import {invoke} from "@tauri-apps/api/core";
 import "./styles/styles.scss";
-import {SysInfo} from "./lib/data_types.ts";
+import {MacroOptions, OptionsHyprland, SysInfo} from "./lib/data_types.ts";
 import {MacroSection} from "./components/MacroSection.tsx";
+import {ImmerHook, useImmer} from "use-immer";
+import {createInitOptions} from "./lib/componentData.ts";
+import {OptionsSection, UnsupportedNotice} from "./components/Options.tsx";
 
 
-function App() {
+function App({sysInfo}: {sysInfo: SysInfo}) {
+  const optImm = useImmer<MacroOptions | undefined>(() => createInitOptions(sysInfo));
+
   return (
     <main className="container">
+      {optImm[0] === undefined ?
+          <UnsupportedNotice /> :
+          <OptionsSection optionsImmer={optImm as ImmerHook<OptionsHyprland>} />
+      }
       <DebugComp />
-      <MacroSection />
+      <MacroSection options={optImm[0]} />
     </main>
   );
 }

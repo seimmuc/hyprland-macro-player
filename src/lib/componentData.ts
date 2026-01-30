@@ -1,4 +1,13 @@
-import {Action, ActionType, KeyCombo, ModifierKey, ProgressInfo, RustMacro} from "./data_types.ts";
+import {
+  Action,
+  ActionType,
+  KeyCombo,
+  MacroOptions,
+  ModifierKey,
+  ProgressInfo,
+  RustMacro,
+  SysInfo
+} from "./data_types.ts";
 import {KeyboardEvent} from "react";
 import {wordToTitleCase} from "./utils.ts";
 
@@ -57,4 +66,15 @@ export function actionsToRust(actions: Action[]): RustMacro["actions"] {
     result.push(rustAction);
   }
   return result;
+}
+
+export function createInitOptions(sysInfo: SysInfo): MacroOptions | undefined {
+  if (sysInfo.support !== 'supported') {
+    return undefined;
+  }
+  const osInfo = sysInfo.os_info;
+  if (osInfo.os === 'linux' && osInfo.desktop_environment === 'hyprland') {
+    return {type: "hyprland", window_identifier: ""};
+  }
+  throw new Error('No implemented options for supported system');
 }

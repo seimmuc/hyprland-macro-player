@@ -45,7 +45,14 @@ pub struct SysInfo {
     pub support: Support,
 }
 
-// Macro types
+// Macro options
+#[derive(serde::Deserialize, std::fmt::Debug)]
+#[serde(tag = "type", rename_all = "lowercase")]
+pub enum MacroOptions {
+    Hyprland { window_identifier: String },
+}
+
+// Macro action types
 #[derive(serde::Deserialize, std::fmt::Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum ModifierKey {
@@ -67,11 +74,14 @@ pub enum MacroAction {
     Key { key: Option<KeyCombo> },
     Craft,
 }
+
+// Macro
 #[derive(serde::Deserialize)]
 pub struct Macro {
     pub id: u32,
     pub actions: Vec<MacroAction>,
     pub loops: u32,
+    pub options: MacroOptions,
 }
 
 // Event types

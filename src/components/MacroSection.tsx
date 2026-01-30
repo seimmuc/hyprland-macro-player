@@ -1,5 +1,14 @@
 import {ActionBox} from "./ActionBox.tsx";
-import {Action, ActionType, MacroEvent, PausedEvent, RunningEvent, RustMacro, StoppedEvent} from "../lib/data_types.ts";
+import {
+  Action,
+  ActionType,
+  MacroEvent,
+  MacroOptions,
+  PausedEvent,
+  RunningEvent,
+  RustMacro,
+  StoppedEvent
+} from "../lib/data_types.ts";
 import {useImmer} from "use-immer";
 import {ActionFunctions, ActionBoxState, MacroState, actionsToRust} from "../lib/componentData.ts";
 import {Controls} from "./Controls.tsx";
@@ -12,10 +21,10 @@ let naId = 0;
 /** Next macro ID */
 let nmId = 0;
 
-export function MacroSection() {
+export function MacroSection({ options }: { options: MacroOptions | undefined }) {
   // ActionBoxState
   let [abState, setAbState] = useImmer<ActionBoxState>({
-    locked: false,
+    locked: options === undefined,
     progress: undefined,
     actions: [],
     loops: 1
@@ -24,7 +33,7 @@ export function MacroSection() {
   let [macroState, setMacroState] = useImmer<MacroState>({
     currentState: 'EDITING',
     activeMacro: undefined,
-    awaitingResponse: false,
+    awaitingResponse: options === undefined,  // Hacky, this is just to lock it on unsupported systems
     error: undefined,
   });
   let macroStateRef = useRef(macroState);
@@ -79,7 +88,7 @@ export function MacroSection() {
     },
     controls: {
       play: async (): Promise<boolean> => {
-        if (macroState.awaitingResponse || macroState.currentState === 'PLAYING') {
+        if (macroState.awaitingResponse || macroState.currentState === 'PLAYING' || options === undefined) {
           return false;
         }
         switch (macroState.currentState) {
@@ -94,7 +103,8 @@ export function MacroSection() {
             const macr: RustMacro = {
               id: nmId++,
               actions: actionsToRust(abState.actions),
-              loops: abState.loops
+              loops: abState.loops,
+              options
             };
             setMacroState(ms => { ms.awaitingResponse = true; });
             setAbState(abs => { abs.locked = true; });
