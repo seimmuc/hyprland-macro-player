@@ -1,9 +1,11 @@
 @use "themes";
+@use "utils";
 
 //$primary-hue: #ff00b9;
 //$primary-hue: #40ff00;
 $primary-hue: #0095ff;
 
+// Theme
 :root {
   &.theme-dark {
     @include themes.themeDark($primary-hue);
@@ -19,4 +21,37 @@ $primary-hue: #0095ff;
   :root {
     @include themes.themeLight($primary-hue);
   }
+}
+
+// Global styles
+:root {
+  // TODO use a good embedded font
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+.container {
+  margin: 0;
+  padding-top: 10vh;
+  @include utils.flex(column, $wrap: false, $justify: center, $align: stretch);
+  text-align: center;
+}
+input, button {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+
+  background-color: var(--col-frame1-bg, #111);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  //border: none;
+  padding: 0.6em 1.2em;
+}
+button:not([disabled]), {
+  cursor: pointer;
 }

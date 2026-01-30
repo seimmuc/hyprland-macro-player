@@ -1,6 +1,5 @@
 import {ReactNode, useState, MouseEvent} from "react";
 import {invoke} from "@tauri-apps/api/core";
-import "./App.css";
 import "./styles/styles.scss";
 import {SysInfo} from "./lib/data_types.ts";
 import {MacroSection} from "./components/MacroSection.tsx";
