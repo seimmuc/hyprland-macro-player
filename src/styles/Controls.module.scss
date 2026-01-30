@@ -9,13 +9,10 @@
   align-self: center;
   @include utils.flex(row, $justify: center, $align: stretch);
   @include utils.no-select;
-  background-color: var(--col-frame1-bg, #181818);
-  border: 2px solid var(--col-frame1-border, #303030);
+  @include utils.top-level-box;
   border-top: none;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  overflow: hidden;
-  padding: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   margin: 0 1.5em;
   button {
     box-sizing: border-box;

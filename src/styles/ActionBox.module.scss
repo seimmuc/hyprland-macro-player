@@ -9,11 +9,7 @@ $action-height: 2.5em;
 
 .actions-box {
   @include utils.flex(column, $justify: stretch, $align: stretch);
-  background-color: var(--col-frame1-bg, #181818);
-  border: 2px solid var(--col-frame1-border, #303030);
-  border-radius: 8px;
-  overflow: hidden;
-  padding: 0;
+  @include utils.top-level-box;
   @include utils.no-select;
 
   .actions-list {

@@ -26,3 +26,10 @@
   @include select-mode($cursor: default, $mode: none);
 }
 
+@mixin top-level-box {
+  padding: 0;
+  background-color: var(--col-frame1-bg, #181818);
+  border: 2px solid var(--col-frame1-border, #303030);
+  border-radius: 8px;
+  overflow: hidden;
+}
