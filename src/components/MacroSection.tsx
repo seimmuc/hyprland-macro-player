@@ -86,6 +86,15 @@ export function MacroSection({ options }: { options: MacroOptions | undefined })
       });
       return true;
     },
+    setLoopCount: (loopCount: number) => {
+      loopCount = Math.round(loopCount);
+      if (loopCount < 1) {
+        return;
+      }
+      setAbState(abs => {
+        abs.loops = loopCount;
+      });
+    },
     controls: {
       play: async (): Promise<boolean> => {
         if (macroState.awaitingResponse || macroState.currentState === 'PLAYING' || options === undefined) {

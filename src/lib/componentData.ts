@@ -30,7 +30,7 @@ export interface ActionFunctions {
   editAction: (actionId: number, func: (action: Action) => void) => void;
   createNewAction: (type: ActionType) => Action;
   removeAction: (actionId: Action["actionId"]) => boolean;
-  // setLoopCount TODO loops;
+  setLoopCount: (loopCount: number) => void;
   controls: {
     play: () => Promise<boolean>;
     pause: () => Promise<boolean>;

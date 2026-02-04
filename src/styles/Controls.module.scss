@@ -7,7 +7,7 @@
 
 .controls-box {
   align-self: center;
-  @include utils.flex(row, $justify: center, $align: stretch);
+  @include utils.flex(row, $justify: center, $align: center);
   @include utils.no-select;
   @include utils.top-level-box;
   border-top: none;
@@ -36,6 +36,9 @@
     &.switching-icon {
       @include utils.switching-icon-wrapper;
     }
+  }
+  input {
+    padding: 0.2em 0.4em;
   }
   :global(.material-symbols-rounded) {
     aspect-ratio: 1/1;
