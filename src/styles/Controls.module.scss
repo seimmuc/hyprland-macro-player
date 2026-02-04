@@ -34,13 +34,7 @@
       filter: drop-shadow(0 0 0.35em color-mix(in oklch, var(--col-complementary-fg-hover, #441) 25%, transparent));
     }
     &.switching-icon {
-      // Overlay child <span>s on top of each other, they'll be animated in tsx
-      display: grid;
-      > span {
-        grid-column: 1;
-        grid-row: 1;
-        backface-visibility: hidden;
-      }
+      @include utils.switching-icon-wrapper;
     }
   }
   :global(.material-symbols-rounded) {

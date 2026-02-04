@@ -33,3 +33,13 @@
   border-radius: 8px;
   overflow: hidden;
 }
+
+@mixin switching-icon-wrapper {
+  // Overlay child <span>s (icons) on top of each other, they should be animated in tsx
+  display: grid;
+  > span {
+    grid-column: 1;
+    grid-row: 1;
+    backface-visibility: hidden;
+  }
+}
