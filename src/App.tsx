@@ -14,8 +14,8 @@ function App({sysInfo}: {sysInfo: SysInfo}) {
   return (
     <main className="container">
       {optImm[0] === undefined ?
-          <UnsupportedNotice /> :
-          <OptionsSection optionsImmer={optImm as ImmerHook<OptionsHyprland>} />
+        <UnsupportedNotice /> :
+        <OptionsSection optionsImmer={optImm as ImmerHook<OptionsHyprland>} />
       }
       <DebugComp />
       <MacroSection options={optImm[0]} />

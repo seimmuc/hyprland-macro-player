@@ -1,10 +1,45 @@
 @use "utils";
+@use "consts";
+
+:export {
+  animationDuration: consts.$animation-duration;
+}
 
 .opts-notice {
   @include utils.top-level-box;
-  padding: calc(0.15em + 2px);
+  @include utils.flex(column, $wrap: false, $justify: flex-start, $align: stretch);
 }
 
 .options-section {
+  padding: calc(0.35em + 2px) calc(0.7em + 2px);
   @include utils.flex(column, $wrap: false, $justify: flex-start, $align: stretch);
+  overflow: hidden;
+  box-sizing: border-box;
+
+  label {
+    @include utils.flex(row, $wrap: true, $justify: flex-start, $align: center);
+    gap: calc(0.5em + 5px);
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 0.6em 0.6em;
+    }
+  }
+}
+
+.expand-collapse-header {
+  border: none;
+  border-radius: 0;
+  padding: calc(0.35em + 2px) calc(0.7em + 2px);
+  box-sizing: border-box;
+  background-color: var(--col-frame2-bg, #202020);
+  @include utils.flex(row, $wrap: false, $justify: flex-start, $align: center);
+  gap: 0.25em;
+
+  .header-name {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  div.exp-col-icon {
+    @include utils.switching-icon-wrapper;
+  }
 }
