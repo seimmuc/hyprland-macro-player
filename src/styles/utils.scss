@@ -27,6 +27,7 @@
 }
 
 @mixin top-level-box {
+  margin: 0.4em 0.4em 0;
   padding: 0;
   background-color: var(--col-frame1-bg, #181818);
   border: 2px solid var(--col-frame1-border, #303030);

@@ -34,9 +34,11 @@ $primary-hue: #0095ff;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-.container {
+body {
   margin: 0;
-  padding-top: 10vh;
+}
+.container {
+  margin: 0.2em;
   @include utils.flex(column, $wrap: false, $justify: center, $align: stretch);
   text-align: center;
 }
