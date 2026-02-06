@@ -6,10 +6,12 @@ import {MacroSection} from "./components/MacroSection.tsx";
 import {ImmerHook, useImmer} from "use-immer";
 import {createInitOptions} from "./lib/componentData.ts";
 import {OptionsSection, UnsupportedNotice} from "./components/Options.tsx";
+import {useToggle} from "@uidotdev/usehooks";
 
 
 function App({sysInfo}: {sysInfo: SysInfo}) {
   const optImm = useImmer<MacroOptions | undefined>(() => createInitOptions(sysInfo));
+  const [showDebug, debugToggle] = useToggle(false);
 
   return (
     <main className="container">
@@ -17,8 +19,15 @@ function App({sysInfo}: {sysInfo: SysInfo}) {
         <UnsupportedNotice /> :
         <OptionsSection optionsImmer={optImm as ImmerHook<OptionsHyprland>} />
       }
-      <DebugComp />
       <MacroSection options={optImm[0]} />
+
+      {/* Debug TODO remove later */}
+      <button style={{marginTop: 30, alignSelf: 'center', opacity: 0.4}} onClick={() => debugToggle()}>
+        debug info
+      </button>
+      {showDebug && (
+        <DebugComp />
+      )}
     </main>
   );
 }
