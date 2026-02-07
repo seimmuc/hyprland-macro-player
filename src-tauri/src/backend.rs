@@ -1,11 +1,13 @@
+use crate::data_types::{Macro, MacroAction, MacroEvent, MacroOptions, MacroProgress, SysInfo};
+use crate::utils::hyprland_key_mods;
 use std::collections::HashMap;
-use std::process::Command;
+use std::env;
+use std::io::Write;
+use std::os::unix::net::UnixStream;
 use std::sync::{Arc, Mutex, RwLock};
 use std::time::Duration;
 use tauri::{AppHandle, Emitter, Manager};
 use tokio::time::{sleep, sleep_until, Instant};
-use crate::data_types::{Macro, MacroAction, MacroEvent, MacroOptions, MacroProgress, SysInfo};
-use crate::utils::hyprland_key_mods;
 
 pub struct MacroState {
     paused: bool,
@@ -167,6 +169,9 @@ async fn hypr_macro_runner(macr: Macro, app: AppHandle) {
         //     panic!("hypr_macro_runner can only execute macros with MacroOptions::Hyprland options")
         // }
     };
+    let his = env::var("HYPRLAND_INSTANCE_SIGNATURE").expect("HYPRLAND_INSTANCE_SIGNATURE is not set");
+    let xdg_run_dir = env::var("XDG_RUNTIME_DIR").expect("XDG_RUNTIME_DIR is not set");
+    let hypr_socket_path = format!("{xdg_run_dir}/hypr/{his}/.socket.sock");
 
     let update_interval = Duration::from_millis(25);
     let mut next_update = Instant::now();
@@ -245,22 +250,10 @@ async fn hypr_macro_runner(macr: Macro, app: AppHandle) {
                         let mod_str = hyprland_key_mods(&key.modifiers);
                         let send_sh_param = format!("{mod_str},{},{window_id}", key.key);
 
-                        let mut cmd = Command::new("hyprctl");
-                        cmd.arg("dispatch").arg("sendshortcut").arg(&send_sh_param);
-                        let cmd_out = cmd.output().unwrap();
-                        let std_out = String::from_utf8_lossy(&cmd_out.stdout).trim().to_string();
-                        if std_out != "ok" {
-                            app.emit("macro_event", MacroEvent::Error {
-                                id: macr.id,
-                                progress: MacroProgress {
-                                    action_index: action_index as u32,
-                                    action_progress: 1.0,
-                                    loop_count: lup,
-                                },
-                                error: format!("Hyprland dispatcher error: {std_out}"),
-                            }).unwrap();
-                            break 'runner;
-                        }
+                        let mut stream = UnixStream::connect(&hypr_socket_path).unwrap();
+                        stream.write_all(format!("dispatch sendshortcut {send_sh_param}").as_bytes()).unwrap();
+                        stream.flush().unwrap();
+                        drop(stream);
                     }
                 }
                 // MacroAction::Craft => {}
