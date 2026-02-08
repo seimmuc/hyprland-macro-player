@@ -48,6 +48,7 @@ pub fn get_session_type() -> SessionType {
     }
 }
 
+#[cfg(target_os = "linux")]
 pub fn hyprland_key_mods(mods: &Vec<ModifierKey>) -> String {
     mods.iter().map(|m| match m {
         ModifierKey::Shift => {"SHIFT"}
