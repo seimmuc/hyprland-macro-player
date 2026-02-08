@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex, RwLock};
 use tauri::{AppHandle, Manager};
 
+mod common;
 // Platform-specific imports
 #[cfg(target_os = "linux")] mod linux;
 #[cfg(target_os = "linux")] use self::linux::macro_runner;
