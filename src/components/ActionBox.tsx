@@ -1,6 +1,6 @@
 import style from "../styles/ActionBox.module.scss";
 import "material-symbols/rounded.css";
-import {Action, ActionType, SleepAction, KeyAction, CraftAction, KeyCombo} from "../lib/data_types.ts";
+import {Action, ActionType, SleepAction, KeyAction, KeyCombo} from "../lib/data_types.ts";
 import {JSX, useState, KeyboardEvent, ChangeEvent} from "react";
 import {AnimatePresence, motion, Reorder } from "motion/react";
 import {useDragControls} from "framer-motion";
@@ -89,7 +89,7 @@ export function ActionRootComp({ action, locked, paused, funcs, progress }: {
   } else if (action.action === "key") {
     child = <ActionKey action={action} locked={locked} editAction={funcs.editAction} />;
   } else if (action.action === "craft") {
-    child = <ActionCraft action={action} locked={locked} editAction={funcs.editAction} />;
+    child = <ActionCraft />;
   } else {
     // @ts-expect-error TS2339
     throw new Error(`Unknown action type "${action.action}"`);
@@ -183,7 +183,7 @@ function ActionKey({ action, locked, editAction }: { action: KeyAction; locked: 
   );
 }
 
-function ActionCraft({action, locked, editAction}: { action: CraftAction; locked: boolean; editAction: ActionFunctions["editAction"] }) {
+function ActionCraft() {
   return (
     <>
       <span>Craft</span>
