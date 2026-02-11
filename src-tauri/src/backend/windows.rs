@@ -23,7 +23,7 @@ impl WinActionExecutor {
 }
 
 impl ActionExecutor for WinActionExecutor {
-    fn press_key(&self, key: &KeyCombo) -> Result<(), String> {
+    async fn press_key(&self, key: &KeyCombo) -> Result<(), String> {
         todo!();
     }
 }

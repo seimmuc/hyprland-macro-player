@@ -7,7 +7,7 @@ use tokio::time::{sleep, sleep_until, Instant};
 
 
 pub trait ActionExecutor {
-    fn press_key(&self, key: &KeyCombo) -> Result<(), String>;
+    async fn press_key(&self, key: &KeyCombo) -> Result<(), String>;
 }
 
 pub async fn macro_runner(macr: Macro, app: AppHandle, executor: impl ActionExecutor) {
@@ -85,7 +85,7 @@ pub async fn macro_runner(macr: Macro, app: AppHandle, executor: impl ActionExec
                         progress,
                     }).unwrap();
                     if let Some(key) = key {
-                        let result = executor.press_key(key);
+                        let result = executor.press_key(key).await;
                         if let Err(error) = result {
                             app.emit("macro_event", MacroEvent::Error {
                                 id: macr.id,

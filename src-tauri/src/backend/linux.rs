@@ -2,9 +2,9 @@ use super::common::{self, ActionExecutor};
 use crate::data_types::{DEInfo, KeyCombo, Macro, MacroOptions, OsInfo, SysInfo};
 use crate::utils::hyprland_key_mods;
 use std::env;
-use std::io::Write;
-use std::os::unix::net::UnixStream;
+use tokio::net::UnixStream;
 use tauri::AppHandle;
+use tokio::io::AsyncWriteExt;
 
 pub async fn macro_runner(macr: Macro, app: AppHandle, sys_info: SysInfo) {
     match sys_info.os_info {
@@ -45,13 +45,13 @@ impl HyprActionExecutor {
     }
 }
 impl ActionExecutor for HyprActionExecutor {
-    fn press_key(&self, key: &KeyCombo) -> Result<(), String> {
+    async fn press_key(&self, key: &KeyCombo) -> Result<(), String> {
         let mod_str = hyprland_key_mods(&key.modifiers);
         let send_sh_param = format!("{mod_str},{},{}", key.key, &self.window_identifier);
 
-        let mut stream = UnixStream::connect(&self.hypr_socket_path).unwrap();
-        stream.write_all(format!("dispatch sendshortcut {send_sh_param}").as_bytes()).unwrap();
-        stream.flush().unwrap();
+        let mut stream = UnixStream::connect(&self.hypr_socket_path).await.expect("Hyprland socket connection error");
+        stream.write_all(format!("dispatch sendshortcut {send_sh_param}").as_bytes()).await.unwrap();
+        stream.flush().await.unwrap();
         Ok(())
     }
 }
