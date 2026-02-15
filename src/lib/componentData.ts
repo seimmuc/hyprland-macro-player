@@ -3,7 +3,7 @@ import {
   ActionType,
   KeyCombo,
   MacroOptions,
-  ModifierKey,
+  ModifierKey, OptionsHyprland, OptionsWindows,
   ProgressInfo,
   RustMacro,
   SysInfo
@@ -74,7 +74,10 @@ export function createInitOptions(sysInfo: SysInfo): MacroOptions | undefined {
   }
   const osInfo = sysInfo.os_info;
   if (osInfo.os === 'linux' && osInfo.desktop_environment === 'hyprland') {
-    return {type: "hyprland", window_identifier: ""};
+    return {type: "hyprland", window_identifier: ""} satisfies OptionsHyprland;
+  }
+  if (osInfo.os === 'windows') {
+    return {type: 'windows', window_id_mode: 'none', window_id_str: '', match_mode: 'simple', auto_focus: false} satisfies OptionsWindows;
   }
   throw new Error('No implemented options for supported system');
 }

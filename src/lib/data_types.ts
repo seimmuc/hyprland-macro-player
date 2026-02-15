@@ -20,13 +20,20 @@ export type PlayerEventType = 'update' | 'running' | 'paused' | 'stopped' | 'err
 
 // Macro options types
 interface BaseMacroOptions {
-  type: 'hyprland';
+  type: 'hyprland' | 'windows';
 }
 export interface OptionsHyprland extends BaseMacroOptions {
   type: 'hyprland';
   window_identifier: string;
 }
-export type MacroOptions = OptionsHyprland;
+export interface OptionsWindows extends BaseMacroOptions {
+  type: 'windows';
+  window_id_mode: 'none' | 'title' | 'process';
+  window_id_str: string;
+  match_mode: 'simple' | 'regex';
+  auto_focus: boolean;
+}
+export type MacroOptions = OptionsHyprland | OptionsWindows;
 
 // Macro action types
 export type ModifierKey = 'shift' | 'ctrl' | 'alt' | 'super';

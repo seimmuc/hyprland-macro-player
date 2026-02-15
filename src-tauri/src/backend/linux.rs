@@ -32,9 +32,9 @@ impl HyprActionExecutor {
             MacroOptions::Hyprland { window_identifier } => {
                 [window_identifier]
             }
-            // _ => {
-            //     panic!("hypr_macro_runner can only execute macros with MacroOptions::Hyprland options")
-            // }
+            _ => {
+                panic!("hypr_macro_runner can only execute macros with MacroOptions::Hyprland options")
+            }
         };
         let his = env::var("HYPRLAND_INSTANCE_SIGNATURE").expect("HYPRLAND_INSTANCE_SIGNATURE is not set");
         let xdg_run_dir = env::var("XDG_RUNTIME_DIR").expect("XDG_RUNTIME_DIR is not set");

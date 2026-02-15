@@ -1,9 +1,18 @@
 import style from '../styles/Options.module.scss';
 import {ImmerHook} from 'use-immer';
-import {MacroOptions, OptionsHyprland} from '../lib/data_types.ts';
+import {MacroOptions, OptionsHyprland, OptionsWindows} from '../lib/data_types.ts';
 import {ChangeEvent, JSX, useState} from 'react';
 import {AnimatePresence, motion} from 'motion/react';
 import {useMeasure} from '@uidotdev/usehooks';
+import {ButtonGroup} from "./ButtonGroup.tsx";
+import {wordToTitleCase} from "../lib/utils.ts";
+
+const LABEL_ANIM = {
+  initial: {opacity: 0, scaleY: 0, height: 0, marginTop: `-${style.optionsLblGap}`},
+  animate: {opacity: 1, scaleY: 1, height: 'auto', marginTop: 0},
+  exit: {opacity: 0, scaleY: 0, height: 0, marginTop: `-${style.optionsLblGap}`},
+  transition: {duration: parseFloat(style.animationDuration)}
+};
 
 export function OptionsSection({ optionsImmer }: { optionsImmer: ImmerHook<MacroOptions> }) {
   const [expanded, setExpanded] = useState<boolean>(true);
@@ -12,8 +21,11 @@ export function OptionsSection({ optionsImmer }: { optionsImmer: ImmerHook<Macro
 
   let child: JSX.Element;
   if (optionsImmer[0].type === 'hyprland') {
-    child = <HyprlandOptions optionsImmer={optionsImmer} />
+    child = <HyprlandOptions optionsImmer={optionsImmer as ImmerHook<OptionsHyprland>} />
+  } else if (optionsImmer[0].type === 'windows') {
+    child = <WindowsOptions optionsImmer={optionsImmer as ImmerHook<OptionsWindows>} />
   } else {
+    // @ts-expect-error TS2339
     throw new Error(`Unknown options type "${optionsImmer[0].type}"`);
   }
 
@@ -28,8 +40,6 @@ export function OptionsSection({ optionsImmer }: { optionsImmer: ImmerHook<Macro
     exit: { opacity: 0, height: 0 },
     transition: {duration: parseFloat(style.animationDuration)}
   }
-
-  console.log(firstState);
 
   return (
     <div className={[style.optsNotice].join(' ')}>
@@ -98,6 +108,94 @@ export function HyprlandOptions({ optionsImmer }: { optionsImmer: ImmerHook<Opti
             onChange={setWinId}
         />
       </label>
+    </>
+  );
+}
+
+const WINDOWS_WID_MODES: OptionsWindows['window_id_mode'][] = ['none', 'title', 'process'];
+const WINDOWS_MATCH_MODES: OptionsWindows['match_mode'][] = ['simple', 'regex'];
+
+export function WindowsOptions({ optionsImmer }: { optionsImmer: ImmerHook<OptionsWindows> }) {
+  const [options, setOptions] = optionsImmer;
+
+  function onWinModeChange(newVal: Set<string | number>) {
+    if (newVal.size !== 1) {
+      return;
+    }
+    const selVal = newVal.values().next().value as OptionsWindows['window_id_mode'];
+    if (!WINDOWS_WID_MODES.includes(selVal)) {
+      return;
+    }
+    setOptions(o => { o.window_id_mode = selVal; });
+  }
+  function onWinStrChange(e: ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    setOptions(o => {
+      o.window_id_str = e.target.value;
+    });
+  }
+  function onWinStrModeChange(newVal: Set<string | number>) {
+    if (newVal.size !== 1) {
+      return;
+    }
+    const selVal = newVal.values().next().value as OptionsWindows['match_mode'];
+    if (!WINDOWS_MATCH_MODES.includes(selVal)) {
+      return;
+    }
+    setOptions(o => {
+      o.match_mode = selVal;
+    })
+  }
+  function onAutoFocChange(e: ChangeEvent<HTMLInputElement>) {
+    setOptions(o => {
+      o.auto_focus = e.target.checked;
+    });
+  }
+  return (
+    <>
+      <label>
+        <span>Window input</span>
+        <ButtonGroup selectionMode="single" onSelectionChange={onWinModeChange} selectedKeys={new Set([options.window_id_mode])}>
+          {WINDOWS_WID_MODES.map(mode => (
+            <ButtonGroup.Button key={mode} id={mode}>{wordToTitleCase(mode)}</ButtonGroup.Button>
+          ))}
+        </ButtonGroup>
+      </label>
+      <AnimatePresence>
+        {options.window_id_mode !== 'none' && (
+          <>
+            <motion.label {...LABEL_ANIM}>
+              <span>Window matcher</span>
+              <motion.input
+                  type="text"
+                  placeholder={options.window_id_mode === 'title' ? 'Window title' : 'Process name'}
+                  value={options.window_id_str}
+                  onChange={onWinStrChange}
+              />
+              <AnimatePresence>
+                {options.window_id_mode === 'title' && (
+                  <motion.div
+                      initial={{opacity: 0, width: 0}}
+                      animate={{opacity: 1, width: 'auto'}}
+                      exit={{opacity: 0, width: 0}}
+                      transition={{duration: parseFloat(style.animationDuration)}}
+                  >
+                    <ButtonGroup selectionMode="single" onSelectionChange={onWinStrModeChange} selectedKeys={new Set([options.match_mode])}>
+                      {WINDOWS_MATCH_MODES.map(mode => (
+                        <ButtonGroup.Button key={mode} id={mode}>{wordToTitleCase(mode)}</ButtonGroup.Button>
+                      ))}
+                    </ButtonGroup>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.label>
+            <motion.label {...LABEL_ANIM} >
+              <span>Auto-focus</span>
+              <input type="checkbox" checked={options.auto_focus} onChange={onAutoFocChange} />
+            </motion.label>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

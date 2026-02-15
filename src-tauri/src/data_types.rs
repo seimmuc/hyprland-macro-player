@@ -47,9 +47,28 @@ pub struct SysInfo {
 
 // Macro options
 #[derive(serde::Deserialize, std::fmt::Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum WindowsWIDMode {
+    None,
+    Title,
+    Process,
+}
+#[derive(serde::Deserialize, std::fmt::Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum WindowsWinMatchMode {
+    Simple,
+    Regex,
+}
+#[derive(serde::Deserialize, std::fmt::Debug)]
 #[serde(tag = "type", rename_all = "lowercase")]
 pub enum MacroOptions {
     Hyprland { window_identifier: String },
+    Windows {
+        window_id_mode: WindowsWIDMode,
+        window_id_str: String,
+        match_mode: WindowsWinMatchMode,
+        auto_focus: bool,
+    }
 }
 
 // Macro action types
