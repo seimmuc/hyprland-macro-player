@@ -30,6 +30,12 @@ $options-lbl-gap: 0.35em;
       border: consts.$options-elem-border-width solid var(--col-frame2-border, #303030);
       border-radius: consts.$options-elem-border-radius;
     }
+    input[type="checkbox"] {
+      // TODO use completely custom style
+      background-color: var(--col-frame3-bg, #eee);
+      accent-color: var(--col-primary-bg, #bbe);
+      cursor: pointer;
+    }
   }
 }
 

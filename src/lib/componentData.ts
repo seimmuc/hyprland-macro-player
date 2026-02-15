@@ -3,7 +3,9 @@ import {
   ActionType,
   KeyCombo,
   MacroOptions,
-  ModifierKey, OptionsHyprland, OptionsWindows,
+  ModifierKey,
+  OptionsHyprland,
+  OptionsWindows,
   ProgressInfo,
   RustMacro,
   SysInfo
