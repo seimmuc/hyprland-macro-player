@@ -59,6 +59,7 @@ fn get_system_info() -> SysInfo {
                 DEInfo::Unknown => SysInfo { os_info, support: Support::Unknown },
             }
         },
+        OsInfo::Windows => SysInfo { os_info, support: Support::Supported },
         _ => SysInfo { os_info, support: Support::Unknown },
     }
 

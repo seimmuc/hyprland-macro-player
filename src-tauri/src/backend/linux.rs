@@ -33,7 +33,7 @@ impl HyprActionExecutor {
                 [window_identifier]
             }
             _ => {
-                panic!("hypr_macro_runner can only execute macros with MacroOptions::Hyprland options")
+                panic!("HyprActionExecutor can only execute macros with MacroOptions::Hyprland options")
             }
         };
         let his = env::var("HYPRLAND_INSTANCE_SIGNATURE").expect("HYPRLAND_INSTANCE_SIGNATURE is not set");
@@ -45,13 +45,13 @@ impl HyprActionExecutor {
     }
 }
 impl ActionExecutor for HyprActionExecutor {
-    async fn press_key(&self, key: &KeyCombo) -> Result<(), String> {
+    async fn press_key(&self, key: &KeyCombo) -> Result<bool, String> {
         let mod_str = hyprland_key_mods(&key.modifiers);
         let send_sh_param = format!("{mod_str},{},{}", key.key, &self.window_identifier);
 
         let mut stream = UnixStream::connect(&self.hypr_socket_path).await.expect("Hyprland socket connection error");
         stream.write_all(format!("dispatch sendshortcut {send_sh_param}").as_bytes()).await.unwrap();
         stream.flush().await.unwrap();
-        Ok(())
+        Ok(true)
     }
 }

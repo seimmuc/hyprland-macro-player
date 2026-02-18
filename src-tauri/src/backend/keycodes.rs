@@ -1,0 +1,83 @@
+use core::option::Option::{self, None, Some};
+use enigo::Key;
+
+pub fn to_enigo_key(js_str: &str) -> Option<Key> {
+    match js_str.to_lowercase().as_str() {
+        "shift" => Some(Key::Shift),
+        "ctrl" => Some(Key::Control),
+        "alt" => Some(Key::Alt),
+        "meta" => Some(Key::Meta),
+        // "a" => Some(Key::A),
+        // "b" => Some(Key::B),
+        // "c" => Some(Key::C),
+        // "d" => Some(Key::D),
+        // "e" => Some(Key::E),
+        // "f" => Some(Key::F),
+        // "g" => Some(Key::G),
+        // "h" => Some(Key::H),
+        // "i" => Some(Key::I),
+        // "j" => Some(Key::J),
+        // "k" => Some(Key::K),
+        // "l" => Some(Key::L),
+        // "m" => Some(Key::M),
+        // "n" => Some(Key::N),
+        // "o" => Some(Key::O),
+        // "p" => Some(Key::P),
+        // "q" => Some(Key::Q),
+        // "r" => Some(Key::R),
+        // "s" => Some(Key::S),
+        // "t" => Some(Key::T),
+        // "u" => Some(Key::U),
+        // "v" => Some(Key::V),
+        // "w" => Some(Key::W),
+        // "x" => Some(Key::X),
+        // "y" => Some(Key::Y),
+        // "z" => Some(Key::Z),
+        // "1" => Some(Key::Num1),
+        // "2" => Some(Key::Num2),
+        // "3" => Some(Key::Num3),
+        // "4" => Some(Key::Num4),
+        // "5" => Some(Key::Num5),
+        // "6" => Some(Key::Num6),
+        // "7" => Some(Key::Num7),
+        // "8" => Some(Key::Num8),
+        // "9" => Some(Key::Num9),
+        // "0" => Some(Key::Num0),
+        " " => Some(Key::Space),
+        // "," => Some(Key::)
+        "f1" => Some(Key::F1),
+        "f2" => Some(Key::F2),
+        "f3" => Some(Key::F3),
+        "f4" => Some(Key::F4),
+        "f5" => Some(Key::F5),
+        "f6" => Some(Key::F6),
+        "f7" => Some(Key::F7),
+        "f8" => Some(Key::F8),
+        "f9" => Some(Key::F9),
+        "f10" => Some(Key::F10),
+        "f11" => Some(Key::F11),
+        "f12" => Some(Key::F12),
+        "tab" => Some(Key::Tab),
+        "capslock" => Some(Key::CapsLock),
+        "backspace" => Some(Key::Backspace),
+        "enter" => Some(Key::Return),
+        // "contextmenu" => Some(Key::RMenu),
+        "arrowup" => Some(Key::UpArrow),
+        "arrowdown" => Some(Key::DownArrow),
+        "arrowleft" => Some(Key::LeftArrow),
+        "arrowright" => Some(Key::RightArrow),
+        "insert" => Some(Key::Insert),
+        "delete" => Some(Key::Delete),
+        "home" => Some(Key::Home),
+        "end" => Some(Key::End),
+        "pageup" => Some(Key::PageUp),
+        "pagedown" => Some(Key::PageDown),
+        s => {
+            if s.len() == 1 {
+                Some(Key::Unicode(s.chars().next().unwrap()))
+            } else {
+                None
+            }
+        }
+    }
+}

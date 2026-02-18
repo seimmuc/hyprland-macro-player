@@ -46,14 +46,14 @@ pub struct SysInfo {
 }
 
 // Macro options
-#[derive(serde::Deserialize, std::fmt::Debug)]
+#[derive(serde::Deserialize, Copy, Clone, std::fmt::Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum WindowsWIDMode {
     None,
     Title,
     Process,
 }
-#[derive(serde::Deserialize, std::fmt::Debug)]
+#[derive(serde::Deserialize, Copy, Clone, std::fmt::Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum WindowsWinMatchMode {
     Simple,
@@ -64,9 +64,13 @@ pub enum WindowsWinMatchMode {
 pub enum MacroOptions {
     Hyprland { window_identifier: String },
     Windows {
+        /// Determines if the input should go to a specific window and how that window will be identified
         window_id_mode: WindowsWIDMode,
+        /// Window identifier string
         window_id_str: String,
+        /// Window identifier match mode
         match_mode: WindowsWinMatchMode,
+        /// Whether the macro executor should focus the target window or wait for it to get focused
         auto_focus: bool,
     }
 }

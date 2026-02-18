@@ -9,6 +9,7 @@ mod common;
 #[cfg(target_os = "linux")] use self::linux::macro_runner;
 #[cfg(target_os = "windows")] mod windows;
 #[cfg(target_os = "windows")] use self::windows::macro_runner;
+#[cfg(target_os = "windows")] mod keycodes;
 
 pub struct MacroState {
     paused: bool,

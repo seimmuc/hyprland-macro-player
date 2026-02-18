@@ -7,7 +7,7 @@ use tokio::time::{sleep, sleep_until, Instant};
 
 
 pub trait ActionExecutor {
-    async fn press_key(&self, key: &KeyCombo) -> Result<(), String>;
+    async fn press_key(&self, key: &KeyCombo) -> Result<bool, String>;
 }
 
 pub async fn macro_runner(macr: Macro, app: AppHandle, executor: impl ActionExecutor) {
@@ -85,18 +85,29 @@ pub async fn macro_runner(macr: Macro, app: AppHandle, executor: impl ActionExec
                         progress,
                     }).unwrap();
                     if let Some(key) = key {
-                        let result = executor.press_key(key).await;
-                        if let Err(error) = result {
-                            app.emit("macro_event", MacroEvent::Error {
-                                id: macr.id,
-                                progress: MacroProgress {
-                                    action_index: action_index as u32,
-                                    action_progress: 0.5,
-                                    loop_count: lup,
-                                },
-                                error,
-                            }).unwrap();
-                            break 'runner;
+                        'key_loop: loop {
+                            let result = executor.press_key(key).await;
+                            match result {
+                                Ok(success) => {
+                                    if success {
+                                        break 'key_loop;
+                                    } else {
+                                        sleep(Duration::from_millis(50)).await;
+                                    }
+                                }
+                                Err(error) => {
+                                    app.emit("macro_event", MacroEvent::Error {
+                                        id: macr.id,
+                                        progress: MacroProgress {
+                                            action_index: action_index as u32,
+                                            action_progress: 0.5,
+                                            loop_count: lup,
+                                        },
+                                        error,
+                                    }).unwrap();
+                                    break 'runner;
+                                }
+                            }
                         }
                     }
                 }
